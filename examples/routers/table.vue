@@ -1,53 +1,77 @@
 <template>
     <div>
-        <Table border :columns="columns7" :data="data6"></Table>
-        <Button @click="handleAdd"> + 1</Button>
+        <Table width="550" height="200" highlight-row :loading="loading" :columns="columns3" :data="data1" ref="table" @on-current-change="handleChange" @on-row-click="rc">
+            <div slot="loading">
+                <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+                <div>Loading</div>
+            </div>
+        </Table>
+        <br><br>
+        <Button @click="handleClear">clear</Button>
+        <Button @click="loading = !loading">Loading</Button>
     </div>
 </template>
 <script>
-    import abc from '../components/test.vue';
     export default {
-        components: { abc },
         data () {
             return {
-                data1: 1,
-//                self: this,
-                columns7: [
+                loading: false,
+                columns3: [
                     {
                         title: '姓名',
                         key: 'name',
-//                        render (row, column, index) {
-//                            return `<abc></abc>`;
-//                        }
-                        render: (h, row, column, index) => {
-                            return h('div', [
-                                h('Button',{
-                                    on: {
-                                        click: this.handleClick
-                                    }
-                                }, 'hello')
-                            ])
-                        }
+                        width: 100,
+                        fixed: 'left'
                     },
                     {
                         title: '年龄',
-                        key: 'age'
+                        key: 'age',
+                        width: 100
+                    },
+                    {
+                        title: '省份',
+                        key: 'province',
+                        width: 100
+                    },
+                    {
+                        title: '市区',
+                        key: 'city',
+                        width: 100
                     },
                     {
                         title: '地址',
-                        key: 'address'
+                        key: 'address',
+                        width: 200
+                    },
+                    {
+                        title: '邮编',
+                        key: 'zip',
+                        width: 100
                     },
                     {
                         title: '操作',
                         key: 'action',
-                        width: 150,
-                        align: 'center',
-                        render (row, column, index) {
-                            return `<i-button type="primary" size="small" @click="show(${index})">查看</i-button> <i-button type="error" size="small" @click="remove(${index})">删除</i-button>`;
+                        fixed: 'right',
+                        width: 120,
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'text',
+                                        size: 'small'
+                                    }
+                                }, '查看'),
+                                h('Button', {
+                                    props: {
+                                        type: 'text',
+                                        size: 'small'
+                                    }
+                                }, '编辑')
+                            ]);
                         }
                     }
                 ],
-                data6: [
+                data1: [
                     {
                         name: '王小明',
                         age: 18,
@@ -71,26 +95,15 @@
                 ]
             }
         },
-        computed: {
-            ttt () {
-                return this.data1 + 1;
-            }
-        },
         methods: {
-            show (index) {
-                this.$Modal.info({
-                    title: '用户信息',
-                    content: `姓名：${this.data6[index].name}<br>年龄：${this.data6[index].age}<br>地址：${this.data6[index].address}`
-                })
+            handleClear () {
+                this.$refs.table.clearCurrentRow();
             },
-            remove (index) {
-                this.data6.splice(index, 1);
+            handleChange (newData, oldData) {
+//                console.log(newData, oldData)
             },
-            handleAdd () {
-                this.data1++;
-            },
-            handleClick () {
-                this.$Message.info('111')
+            rc (data, index) {
+                console.log(data, index);
             }
         }
     }
